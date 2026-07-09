@@ -1,0 +1,10 @@
+PROMPT SET
+
+Durante o desenvolvimento do projeto foram utilizadas ferramentas de Inteligência Artificial como apoio pontual em algumas tarefas, nomeadamente:
+
+* Esclarecimento de dúvidas sobre tecnologias IoT e comunicação entre dispositivos.
+* Apoio na revisão e melhoria da redação do relatório.
+* Esclarecimento de conceitos relacionados com Node-RED, InfluxDB e WebSockets.
+* Sugestões para organização da documentação técnica.
+
+A Inteligência Artificial foi utilizada apenas como ferramenta de apoio. A arquitetura da solução, implementação, testes, validação e restantes decisões técnicas foram realizadas pelo elemento do grupo.

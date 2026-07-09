@@ -1,0 +1,189 @@
+[
+    {
+        "id": "6ee8a78f0f47144f",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "cb3cd5dbad644ad0",
+        "type": "websocket-listener",
+        "path": "/ws/in",
+        "wholemsg": "false"
+    },
+    {
+        "id": "8a19d79851e25cbc",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": 8086,
+        "protocol": "http",
+        "database": "database",
+        "name": "Minhadb",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://192.168.1.100:8086",
+        "timeout": "30",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "1ed4bf4440fee3a2",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": 8086,
+        "protocol": "http",
+        "database": "database",
+        "name": "Minhabasededados2",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "timeout": 10,
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "396477a350fcd9ec",
+        "type": "websocket in",
+        "z": "6ee8a78f0f47144f",
+        "name": "",
+        "server": "cb3cd5dbad644ad0",
+        "client": "",
+        "x": 280,
+        "y": 240,
+        "wires": [
+            [
+                "8cab4a5eb4eefc58"
+            ]
+        ]
+    },
+    {
+        "id": "f140e8f08c7ec476",
+        "type": "influxdb out",
+        "z": "6ee8a78f0f47144f",
+        "influxdb": "8a19d79851e25cbc",
+        "name": "",
+        "measurement": "boxing",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "ISEL",
+        "bucket": "Projeto_Boxe_V2",
+        "x": 880,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "8cab4a5eb4eefc58",
+        "type": "json",
+        "z": "6ee8a78f0f47144f",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 470,
+        "y": 220,
+        "wires": [
+            [
+                "c1c11bbc67ff84f4"
+            ]
+        ]
+    },
+    {
+        "id": "c1c11bbc67ff84f4",
+        "type": "function",
+        "z": "6ee8a78f0f47144f",
+        "name": "function 1",
+        "func": "// Recebe JSON\nconst data = msg.payload;\n\n// Measurement\nmsg.measurement = \"boxing\";\n\n// Tags\nmsg.tags = {\n    glove_id: String(data.gid ?? 0),\n    source: \"esp32\"\n};\n\n// Payload = fields\nmsg.payload = {\n\n    accel_x: data.ax ?? 0,\n    accel_y: data.ay ?? 0,\n    accel_z: data.az ?? 0,\n\n    gyro_x: data.gx ?? 0,\n    gyro_y: data.gy ?? 0,\n    gyro_z: data.gz ?? 0,\n\n    mag_x: data.mx ?? 0,\n    mag_y: data.my ?? 0,\n    mag_z: data.mz ?? 0,\n\n    fsr_0: data.fs0 ?? 0,\n    fsr_1: data.fs1 ?? 0,\n    fsr_2: data.fs2 ?? 0,\n    fsr_3: data.fs3 ?? 0,\n\n    sequence: parseInt(data.seq ?? 0)\n};\n\n// Timestamp\nmsg.timestamp = (data.ts ?? Date.now()) * 1000;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 220,
+        "wires": [
+            [
+                "f140e8f08c7ec476",
+                "cff2259965cf30d0"
+            ]
+        ]
+    },
+    {
+        "id": "cff2259965cf30d0",
+        "type": "debug",
+        "z": "6ee8a78f0f47144f",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "d92ade2bd9529956",
+        "type": "inject",
+        "z": "6ee8a78f0f47144f",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{   \"gid\": 1,   \"seq\": 1,   \"ts\": 1716200000,    \"ax\": 0.12,   \"ay\": -0.45,   \"az\": 9.81,    \"gx\": 1.52,   \"gy\": -0.87,   \"gz\": 0.33,    \"mx\": 22.4,   \"my\": -15.8,   \"mz\": 41.2,    \"fs0\": 120,   \"fs1\": 85,   \"fs2\": 30,   \"fs3\": 10 }",
+        "payloadType": "str",
+        "x": 290,
+        "y": 140,
+        "wires": [
+            [
+                "8cab4a5eb4eefc58"
+            ]
+        ]
+    },
+    {
+        "id": "3be985bcb4a2aa74",
+        "type": "websocket in",
+        "z": "6ee8a78f0f47144f",
+        "x": 680,
+        "y": 380,
+        "wires": [
+            [
+                "383929e77d79354b"
+            ]
+        ]
+    },
+    {
+        "id": "383929e77d79354b",
+        "type": "debug",
+        "z": "6ee8a78f0f47144f",
+        "name": "Tudo",
+        "active": true,
+        "complete": "true",
+        "x": 880,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "44dbea3041ae9788",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-influxdb": "0.7.0"
+        }
+    }
+]
